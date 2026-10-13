@@ -47,6 +47,10 @@ public class DemoEmployeeSeeder {
                 String email = existing.getEmail();
                 if (email != null && email.endsWith(".demo@example.com")) {
                     String updatedEmail = email.replace(".demo@example.com", "@gmail.com");
+                    // If a Gmail demo record already exists, preserve this legacy row with a unique Gmail alias.
+                    if (repository.existsByEmailIgnoreCase(updatedEmail)) {
+                        updatedEmail = email.substring(0, email.length() - ".demo@example.com".length()) + ".legacy@gmail.com";
+                    }
                     if (!repository.existsByEmailIgnoreCase(updatedEmail)) {
                         existing.setEmail(updatedEmail);
                         repository.save(existing);
